@@ -1,0 +1,57 @@
+- Model selector:
+   - Group models by type
+   - Allow to pick a model from an old fit
+  
+- When no smearing info is available, make sure that the message "no smearinf info" is shown after the fit when Data Default is selected        
+  
+   
+- Save a model (not just the result of a fit, but just a model I happen to like)
+
+- Set polydispersity
+
+- Allow for smearing:
+    - Present the smearing info found in the data if available
+    - Allow user to set his own
+	- Treat the error by which the dxw/dxl values are not the same for all Q points. Need to report the error to the user.
+
+- Always show chi2 after a user parameter change
+
+- Would be nice to have a page to show meta-data like q range, smearing params, etc...
+
+- Skip Q=0 and notify user
+
+- When selecting a smearing approach: change the input parameters displayed to the user
+
+- Put models in a DB instead of in code, and use parameter ID instead of strings
+
+- The data summary page should also be a mini-dashboard with all the fits
+ 
+- Disable scrolling zoom on all plots. 
+- Add zoom reset button
+
+- Multiple data set / batch processing / parametrics fitting
+
+MODELS:
+	- help for each parameter (code the help in the models)
+	- image for each formula
+	- help button for general description
+
+Questions for SANS group:
+- Decision on sansmodel/igorlib changes?
+- Decision on smearing calculations?
+
+COMMON FUNCTIONALITY:
+- Create RecentData object, and access list of RecentData objects
+- Access IqData
+- Access list of recent fits (from all apps)
+
+
+ERRORS:
+- select cylinder, fit, then hit the back button and click Resend. 
+   There's an error because it wants to use the sphere model which has no length.
+
+DONE:
+
+- Show errors
+- When showing the fit results, also show which parameters were selected for fitting.
+- Select min/max Q range

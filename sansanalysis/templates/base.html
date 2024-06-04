@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<link rel="shortcut icon" href="/media/sanslogo_icon.png" type="image/x-icon">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="/media/layout.css" type="text/css" />
+<title>SANS Data Analysis {% block title %}{% endblock %}</title>
+<link type="text/css" href="/media/thirdparty/jquery-ui/css/custom-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" />	
+<script type="text/javascript" src="/media/thirdparty/jquery-ui/js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/media/thirdparty/jquery-ui/js/jquery-ui-1.7.2.custom.min.js"></script>
+{% block header %}{% endblock %}
+
+<script type="text/javascript">
+	function user_alert() {
+		$(".user_alert").fadeIn("slow");
+		$(".user_alert").click(function(){
+			$(this).fadeOut("fast");
+		})	
+	}
+
+	function show_comment_dialog() {
+		if (document.getElementById('comment_dialog')==null) {$("body").append("<div id='comment_dialog'> </div>");}
+		document.getElementById('comment_dialog').innerHTML = "<p>Thank you for you suggestions and comments:</p><textarea cols='30' rows='7' id='comment_text' ></textarea> <p><div class='small'>Your suggestion will be read by our team shortly. Note that we are only able to write to you if you entered a valid email address when you registered.</div>";
+		$("#comment_dialog").dialog({ draggable: false, width: 300, height: 360, modal: true, resizable: false, title: 'Suggestions',
+			'buttons': {Cancel: function() {$(this).dialog('close');}}		
+		});
+		$("#comment_dialog").dialog('option', 'buttons', 
+		{
+				'Send': function() {
+					var comment_text = document.getElementById('comment_text').value;
+					document.getElementById('comment_dialog').innerHTML = "<p>Thank you!</p>";
+					$(this).dialog('option', 'buttons', {'Close': function() {
+						$(this).dialog('close');
+						//$(this).dialog('destroy');
+					}}); 
+					$.post("/comments/", { url: "{{ request.path }}", text: comment_text} );
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+					//$(this).dialog('destroy');
+				}
+		});
+		
+		$("#comment_dialog").dialog('open');
+	};
+		
+	
+</script>
+</head>
+
+<body>
+
+<script id="source" language="javascript" type="text/javascript">
+	$(document).ready(user_alert);
+</script>
+	
+<div class="banner">
+	<div class="banner_title"> SANS Data Analysis <span id='beta'>beta</span></div>
+		
+	<div class="user_info">
+	{% if user.is_authenticated %}
+		{% if user.get_profile %}
+			{% if user.get_profile.registered %}
+		<img src="{{ user.get_profile.gravatar|safe }}&s=16" height="16" width="16" alt="">
+		<a href="/users/registration" title="Click here to change your registration information"> {{ user.username }}</a>
+			{% else %}
+		<a href="/users/registration" title="Click here to register"> Unknown User </a>
+			{% endif %}
+		{% else %}
+			LOCAL USER
+		{% endif %}
+		| <a href="/users/logout"> logout </a>
+	{% endif %}
+		<div class="suggestions">
+			<a href='javascript:void(0);' onclick='show_comment_dialog();' title='Give us your suggestions on this page!'>suggestions?</a>
+		</div>
+	</div>
+</div>
+
+<div class="breadcrumbs">
+{% block breadcrumb %}
+	{% if breadcrumbs %}
+		{{ breadcrumbs|safe }}
+  	{% else %}
+  		<a href="/">Home</a>
+  	{% endif %}
+{% endblock %}
+</div>
+
+<div id="content">	
+	<div class="content_body">
+	        {% block content %}
+	        {% endblock %}
+    </div>
+    <div class='footer'>
+    <p>   
+    	<a href="/analysis/about" title='Learn about this site'>about</a> |
+     	images &copy; 2009 Mathieu Doucet 
+    </p>
+    </div>    		
+</div>
+
+<div id="rightbar">
+{% block rightbar %}
+{% endblock %}
+</div>
+
+<div id="links">
+{% block sidebar %}
+{% endblock %}
+
+{% if actions %}
+	<div class="sidetitle">Actions</div>
+	<div class="side">
+	{% for action in actions %}
+		<a {% if action.url %} href={{ action.url }} {% else %} href='javascript:void(0);' class='label_action' {% endif %}
+			{% for attr in action.attrs %}
+				{{ attr.name }}={{ attr.value|safe }} 
+			{% endfor %}
+		>{{ action.name }}</a><br>
+	{% endfor %}
+	</div>	
+{% endif %}
+    
+{% if user.is_authenticated %}
+    <div class="sidetitle">Data</div>
+	<div class="side">
+		<a href="/analysis/dashboard" title='Click to go to your data dashboard.'>Data dashboard</a><br>
+	</div>
+	{% if recent_data %}
+	<div class="sidetitle">Recent data</div>
+	<div class="side">
+		{% for data in recent_data %}
+		  <a href="{{ data.url|safe }}">{{ data.name|safe }}</a><br>
+		{% endfor %}
+	</div>
+	{% endif %}
+	{% if recent_fits %}
+	<div class="sidetitle">Recent fits</div>
+	<div class="side">
+		{% for fit in recent_fits %}
+		  <a href="{{ fit.url|safe }}">{{ fit.name|safe }}</a><br>
+		{% endfor %}
+	</div>
+	{% endif %}
+{% endif %}
+
+{% if user_alert %}
+<div class='user_alert'>
+	<div class="close"/>
+	<div id="alert_message">
+	{% for item in user_alert %}
+		{{ item|safe }} {% if not forloop.last %}<br><br>{% endif %}
+	{% endfor %}
+	</div>
+</div> 
+{% endif %}
+
+<div id='dialog' style='display:none;'></div>
+
+</div>
+
+</body>
+
+</html>

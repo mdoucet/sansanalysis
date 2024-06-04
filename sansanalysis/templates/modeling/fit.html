@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load webdesign %}	
+{% block header %}
+    <!--[if IE]><script language="javascript" type="text/javascript" src="/media/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/media/flot/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="/media/flot/jquery.flot.navigate.js"></script>
+    <script language="javascript" type="text/javascript" src="/media/js/dataplot.js"></script>
+    <script language="javascript" type="text/javascript" src="/media/js/modeling.js"></script>
+    <script language="javascript" type="text/javascript" src="/media/js/core.js"></script>
+    <link rel="stylesheet" href="/media/plots.css" type="text/css" />
+    <link rel="stylesheet" href="/media/css/analysis.css" type="text/css" />
+    
+    <script type="text/javascript">
+		function process_data() {
+			window.fit_problem = {
+				iq_id: {{ iq_id }},
+				{% if model_id %}
+				model_id: {{ model_id }}
+				{% else %}
+				model_id: 0
+				{% endif %}
+				
+			};
+			window.iq_data ={{iq_data|safe}};
+			window.iq_calc = null;
+			{% if iq_calc %}
+    		window.iq_calc = {{iq_calc|safe}};
+    		{% endif %}	
+			
+			// Model name
+			{% if model_name %}
+			window.model_name = "{{ model_name }}";
+			document.getElementById('model_name').innerHTML = "{{ model_name }}";
+			{% else %}
+			window.model_name = "I_calc(Q) [1/cm]";
+			{% endif %}
+			
+			window.fit_problem.model_pars = {{ model_params_list|safe }};
+			
+			// Smearing model
+			window.fit_problem.smear_option_id = {% if smearing %}{{ smearing }}{% else %}0{% endif %};
+			window.fit_problem.smear_fixed = ("{{ smear_fixed }}".toLowerCase() == 'true');
+			window.fit_problem.smear_pars = {%if smear_params_list %}{{ smear_params_list|safe }}{% else %}new Array(){% endif %};
+			window.fit_problem.smear_model_id = {% if smear_type_id %}{{ smear_type_id }}{% else %}null{% endif %};
+		}
+		
+	    function iq_plot(){
+			var data = [ { data: window.iq_data, label: "I(Q) [1/cm]"}
+		    			,{ data: window.iq_calc, label: window.model_name}
+			];
+			var options = {
+				series: { lines: { show: true }, points: { show: true }, shadowSize: 0 },
+				lines: { show: true, fill: true, fillColor: "rgba(255, 255, 255, 0.2)", lineWidth: 2 },
+				points: { show: true, fill: true,
+					xerr: {scaleAxis:false, show: false, upperCap: "-", lowerCap: "-"}, 
+					yerr: {show: true, upperCap: "-", lowerCap: "-", asymmetric:true}
+				},
+				zoom: { interactive: false, amount: 1.05 },
+				grid: { hoverable: true, clickable: false },
+				pan: { interactive: true },
+				xaxis : {
+	               		{% if ticks_x %}	
+	               			ticks: {{ticks_x|safe}}
+	               		{% endif %}
+				},	
+				yaxis : {
+	               		{% if ticks_y %}	
+	               			ticks: {{ticks_y|safe}}
+	               		{% endif %}
+				},	
+				legend: { margin: [10,10] },
+				app_options: {}
+			};  
+			
+			options.app_options.scale_x = '{{ xscale|default:'linear'}}';
+			options.app_options.scale_y = '{{ yscale|default:'linear'}}';
+			
+			if(iq_data.length>0){
+				create_plot_new($,'data_plot', data, options, 'Q [1/&Aring;]', true);
+			};  		
+	  	};  
+	    function on_load(){
+			process_data();
+	    	iq_plot();
+			//show_parameters();
+			window.modeling_help =  '<p> Model fitting allows you to fit your data to theoretical models.</p>';
+			window.modeling_help += '<p> We are currently working on the following features:<\p>';
+			window.modeling_help += '<ul><li>Polydispersity</li><li>Adding structure factors</li><li>Simultaneous fitting</li><li>Parametric fitting</li><li>Initializing models from previous fits</li></ul>'
+			window.modeling_help += 'Come back soon for more features!';
+	    }
+	</script>
+{% endblock %}
+
+{% block content %}
+	<h1 class="title"> Model Fitting <a href="javascript:void(0);" title="Click to get more information about model fitting"><img onclick="show_help_dialog(window.modeling_help);" src="/media/question_mark_16x16.png" height="16" width="16"></a></h1>
+	<p>
+	
+	<!-- Errors -->
+	<div id='model_pars_errors'></div>
+	{% if form.errors %}
+		<div class="error">
+			{{ form.errors }}
+		</div>
+	{% endif %}
+
+	<p>
+	<div class='plot_area'>
+		{% if chisqr %}
+		<div id='chi2'>&chi; <span class='exponent'>2</span>={{ chisqr }}</div>
+		{% endif %}
+		<div id="scale_links">
+		x-scale:
+		{% ifequal xscale 'linear' %} 
+		<a href="?{{ xscale_qs }}=log">log</a> | linear
+		{% else %}
+		log | <a href="?{{ xscale_qs }}=linear">linear</a>
+		{% endifequal %}
+		&nbsp;&nbsp;&nbsp;
+		y-scale:
+		{% ifequal yscale 'linear' %}  
+		<a href="?{{ yscale_qs }}=log">log</a> |linear
+		{% else %}
+		log | <a href="?{{ yscale_qs }}=linear">linear</a>
+		{% endifequal %}
+		</div>
+		<div id='data_plot' style="width:550px;height:200px"></div>
+	</div>		
+	<br>
+	<p>
+
+
+	<p></p>
+	
+	<div class="analysis_form">
+	<form action="/analysis/{{ iq_id }}/fit/" method="POST">
+
+		<label for="id_model">{{ form.model.label }}:</label>
+		<b><span id="model_name"></span></b>
+		{{ form.model }} (<a href='javascript:void(0);' onclick='show_fit_model_dialog();' title='Click to select a new model'>change</a>)
+		<br><br>
+		<div class="model_parameters">
+			<div id="parameters">{% include "modeling/model_parameters.html" %}</div>
+
+			<div class="section_spacer"></div>
+			<p>
+				Specify the Q range to be used in the fit [optional]:<br>
+				<div class="spacer"></div>
+				<div class='qrange'>
+				<label for="id_q_min">{{ form.q_min.label|safe }}</label> {{ form.q_min }}	
+				<label for="id_q_max">{{ form.q_max.label|safe }}</label> {{ form.q_max }}	
+				</div>
+			</p>
+			
+			<div class="section_spacer"></div>
+			<p>
+				Specify your smearing parameters [optional]:<br>
+				<div class="spacer"></div>
+				<input type="radio" id='id_smearing_0' class="form_chkbox" name="smearing" value="0" onclick='smearing_clicked(0);' {% ifequal smearing 0 %} checked {% endifequal %} title="Select this option to skip smearing"/> None
+				<input type="radio" id='id_smearing_1' class="form_chkbox" name="smearing" value="1" onclick='smearing_clicked(1);' {% ifequal smearing 1 %} checked {% endifequal %} title="Select this option to use the smearing information found in the data file"/> Data default
+				<input type="radio" id='id_smearing_2' class="form_chkbox" name="smearing" value="2" onclick='smearing_clicked(2);' {% ifequal smearing 2 %} checked {% endifequal %} title="Select this option to choose point smearing"/> Point smearing
+				<input type="radio" id='id_smearing_3' class="form_chkbox" name="smearing" value="3" onclick='smearing_clicked(3);' {% ifequal smearing 3 %} checked {% endifequal %} title="Select this option to choose slit smearing"/> Slit smearing
+				<br>
+				<div class="section_spacer"></div>
+				<div class="uncheckable_parameters" id="smearing_params">
+					{% if smear_params %}
+					{% include "modeling/smearing_parameters.html" %}
+					{% endif %}
+				</div>
+			</p>
+			<br><br><button type="submit">Perform fit</button>			
+		</div>
+		<div class="spacer"></div>
+	</form>
+	</div>
+
+	
+	<script id="source" language="javascript" type="text/javascript">
+		window.onload=on_load;
+	</script>
+	
+{% endblock %}

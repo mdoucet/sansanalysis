@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+	
+{% block header %}
+    <!--[if IE]><script language="javascript" type="text/javascript" src="/media/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/media/flot/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="/media/flot/jquery.flot.navigate.js"></script>
+    <script language="javascript" type="text/javascript" src="/media/js/dataplot.js"></script>
+    <script language="javascript" type="text/javascript" src="/media/js/core.js"></script>
+    <link rel="stylesheet" href="/media/plots.css" type="text/css" />
+    
+    <script type="text/javascript">
+    	
+    	function accept_alpha(value) {
+    		document.getElementById('id_alpha').value = value.toPrecision(1);
+    	}
+    	function accept_nterms(value) {
+    		document.getElementById('id_n_terms').value = value;
+    	}
+    	
+    	function get_params() {
+			var params = "n_terms="+Number(document.getElementById("id_n_terms").value);
+			params = params + "&alpha="+Number(document.getElementById("id_alpha").value);
+			params = params + "&d_max="+Number(document.getElementById("id_d_max").value);
+			params = params + "&slit_height="+Number(document.getElementById("id_slit_height").value);
+			params = params + "&slit_width="+Number(document.getElementById("id_slit_width").value);
+			params = params + "&q_min="+Number(document.getElementById("id_q_min").value);
+			params = params + "&q_max="+Number(document.getElementById("id_q_max").value); 
+			return params;		
+    	};
+    	
+		function par_change(x) {
+			var y=document.getElementById(x).value
+			document.getElementById(x).value=y.toUpperCase()
+		};
+		
+		function get_estimates() { 
+			var params = get_params();
+			$.ajax({
+			  url: '/analysis/{{ iq_id }}/pr_estimate/?'+params,
+			  cache: false,
+			  success: function(xmldata){
+		              	var alpha   = xmldata.getElementsByTagName("alpha");
+		              	var n_term  = xmldata.getElementsByTagName("n_terms");
+		              	var a_value = alpha[0].childNodes[0].nodeValue;
+		              	var n_value = n_term[0].childNodes[0].nodeValue;
+		              	var a_cmd   = "accept_alpha("+a_value+");";
+		              	var n_cmd   = "accept_nterms("+n_value+");";
+		              	
+ 		              	document.getElementById('alpha_estimate').innerHTML=
+  		              		"<label class='label_action' title='Click to accept estimate' onclick="+a_cmd+">"+a_value+"</label>";
+  		              		
+ 		              	document.getElementById('n_terms_estimate').innerHTML=
+  		              		"<label class='label_action' title='Click to accept estimate' onclick="+n_cmd+">"+n_value+"</label>";
+  		              		
+  		              	//explore_dmax();
+			  }
+			});
+		};      
+		
+		function explore_dmax() { 
+			var params = get_params();
+			if (document.getElementById("d_expl_min").value!='') {
+				params = params + "&expl_min="+document.getElementById("d_expl_min").value;    
+				params = params + "&expl_max="+document.getElementById("d_expl_max").value;    
+				params = params + "&expl_npt="+document.getElementById("d_expl_npt").value;
+			};   
+			$.ajax({
+			  url: '/analysis/{{ iq_id }}/explore_pr/?'+params,
+			  cache: false,
+			  success: function(xmldata){
+					var iq_data = get_data_from_xml(xmldata);
+					var data = [ { data: iq_data, label: "Chi <span class='exponent'>2</span>"} ];
+					var options = {
+						lines: { show: true, fill: true, fillColor: "rgba(255, 255, 255, 0.2)", lineWidth: 2 },
+						points: { show: true, fill: true, radius: 2 },
+						colors: ["#d18b2c"]
+					};  
+					if(iq_data.length>0){
+						create_plot($,'explorer_chart', 'linear', data, options);
+					} else {
+						document.getElementById('explorer_chart').innerHTML =  
+							"<div class='noplot'><div class='explanation'>No explorer preview available</div></div>";
+					};
+			  }
+			});
+		};      
+		
+
+	    function get_data_from_xml(xmldata) {
+	    	var data = new Array();
+	      	points=xmldata.getElementsByTagName("point");
+	      	  
+	      	if (points.length>0) {
+		      	  document.getElementById('d_expl_npt').value=points.length;
+		      	  document.getElementById('d_expl_min').value=parseFloat(points[0].getElementsByTagName("x")[0].childNodes[0].nodeValue);
+		      	  document.getElementById('d_expl_max').value=parseFloat(points[points.length-1].getElementsByTagName("x")[0].childNodes[0].nodeValue);
+		
+				  for (i=0;i<points.length;i++) {
+				  	  var x = parseFloat(points[i].getElementsByTagName("x")[0].childNodes[0].nodeValue);
+				  	  var y = parseFloat(points[i].getElementsByTagName("y")[0].childNodes[0].nodeValue);
+					  data[i] = new Array(x,y);
+				  }
+			}  
+			return data;
+	    }
+	      
+	    function iq_plot(){
+			var iq_data = {{iq_data|safe}}; 
+			{% if iq_calc %}
+    		var iq_calc = {{iq_calc|safe}};
+    		{% endif %}			
+			var data = [ { data: iq_data, label: "I(Q) [1/cm]"}
+						{% if iq_calc %}
+		    			,{ data: iq_calc, label: "I_calc(Q) [1/cm]"}
+		    			{% endif %}			
+			];
+			var options = {
+				series: { lines: { show: true }, points: { show: true }, shadowSize: 0 },
+				lines: { show: true, fill: true, fillColor: "rgba(255, 255, 255, 0.2)", lineWidth: 2 },
+				points: { show: true, fill: true,
+					xerr: {scaleAxis:false, show: false, upperCap: "-", lowerCap: "-"}, 
+					yerr: {show: true, upperCap: "-", lowerCap: "-", asymmetric:true}
+				},
+				zoom: { interactive: true, amount: 1.05 },
+				grid: { hoverable: true, clickable: false },
+				pan: { interactive: true },
+				xaxis : {
+	               		{% if ticks_x %}	
+	               			ticks: {{ticks_x|safe}}
+	               		{% endif %}
+				},	
+				yaxis : {
+	               		{% if ticks_y %}	
+	               			ticks: {{ticks_y|safe}}
+	               		{% endif %}
+				},	
+				legend: { margin: [10,10] },
+				app_options: {}
+			};  
+			
+			options.app_options.scale_x = '{{ xscale|default:'linear'}}';
+			options.app_options.scale_y = '{{ yscale|default:'linear'}}';
+			
+			if(iq_data.length>0){
+				create_plot_new($,'data_plot', data, options, 'Q [1/&Aring;]', true);
+			};  		
+	  	};  
+	  	
+	    function pr_plot(){
+			var pr_data = {{output_data|safe}}; 
+			var data = [ { data: pr_data, label: "P(r) [1/cm <span class='exponent'>3</span>]"}];
+			var options = {
+				series: { lines: { show: true }, points: { show: true }, shadowSize: 0 },
+				lines: { show: true, fill: true, fillColor: "rgba(255, 255, 255, 0.2)", lineWidth: 2 },
+				points: { show: true, fill: true,
+					xerr: {scaleAxis:false, show: false, upperCap: "-", lowerCap: "-"}, 
+					yerr: {show: false, upperCap: "-", lowerCap: "-", asymmetric:true}
+				},
+				zoom: { interactive: true, amount: 1.05 },
+				grid: { hoverable: true, clickable: false },
+				pan: { interactive: true },
+				xaxis : {
+	               		{% if output_ticks_x %}	
+	               			ticks: {{output_ticks_x|safe}}
+	               		{% endif %}
+				},	
+				yaxis : {
+	               		{% if output_ticks_y %}	
+	               			ticks: {{output_ticks_y|safe}}
+	               		{% endif %}
+				},	
+				legend: { margin: [10,10] },
+				app_options: {}
+			};  
+			
+			options.app_options.scale_x = '{{ output_xscale|default:'linear'}}';
+			options.app_options.scale_y = '{{ output_yscale|default:'linear'}}';
+			
+			if(pr_data.length>0){
+				create_plot_new($,'pr_plot', data, options, 'D [&Aring;]', true);
+			};  		
+
+	  	};  
+	    function on_load(){
+	    	iq_plot();
+	    	pr_plot();
+	    	get_estimates();
+	    }
+      
+	</script>
+{% endblock %}
+
+{% block content %}
+	<h1 class="title"> P(r) Inversion </h1>
+	<p>
+	
+	<!-- Errors -->
+	{% if form.errors %}
+		<div class="error">
+			{% if form.n_terms.errors %}
+				N terms:{{ form.n_terms.errors }}
+			{% endif %}
+			{% if form.alpha.errors %}
+				Alpha: {{ form.alpha.errors }}
+			{% endif %}
+			{% if form.d_max.errors %}
+				D max: {{ form.d_max.errors }}
+			{% endif %}	
+			{% if form.slit_height.errors %}
+				Slit height: {{ form.slit_height.errors }}
+			{% endif %}
+			{% if form.slit_width.errors %}
+				Slit width: {{ form.slit_width.errors }}
+			{% endif %}
+			{% if form.q_min.errors %}
+				Q min: {{ form.q_min.errors }}
+			{% endif %}
+			{% if form.q_max.errors %}
+				Q max: {{ form.q_max.errors }}
+			{% endif %}
+		</div>
+	{% endif %}
+	<p>
+	<div class='plot_area'>
+		<div id="scale_links">
+		x-scale:
+		{% ifequal xscale 'linear' %} 
+		<a href="?{{ xscale_qs }}=log">log</a> | linear
+		{% else %}
+		log | <a href="?{{ xscale_qs }}=linear">linear</a>
+		{% endifequal %}
+		&nbsp;&nbsp;&nbsp;
+		y-scale:
+		{% ifequal yscale 'linear' %}  
+		<a href="?{{ yscale_qs }}=log">log</a> |linear
+		{% else %}
+		log | <a href="?{{ yscale_qs }}=linear">linear</a>
+		{% endifequal %}
+		</div>
+		<div id='data_plot' style="width:550px;height:200px"></div>
+	</div>		
+	<br>
+	<p>
+	{% if output_data %}
+	<div class='plot_area'>
+		<div id="scale_links">
+		x-scale:
+		{% ifequal output_xscale 'linear' %} 
+		<a href="?{{ xoutscale_qs }}=log">log</a> | linear
+		{% else %}
+		log | <a href="?{{ xoutscale_qs }}=linear">linear</a>
+		{% endifequal %}
+		&nbsp;&nbsp;&nbsp;
+		y-scale:
+		{% ifequal output_yscale 'linear' %}  
+		<a href="?{{ youtscale_qs }}=log">log</a> |linear
+		{% else %}
+		log | <a href="?{{ youtscale_qs }}=linear">linear</a>
+		{% endifequal %}
+		</div>
+		<div id='pr_plot' style="width:550px;height:200px"></div>
+	</div>	
+	{% endif %}	
+	
+	<script id="source" language="javascript" type="text/javascript">
+		window.onload=on_load;
+	</script>
+
+{% endblock %}
+
+{% block rightbar %}
+	<div class="sidetitle">Inputs</div>
+	<div class="side">
+	<form action="/analysis/{{ iq_id }}/invert/" method="POST">
+
+		<label for="id_d_max">D max [&Aring;]</label>
+		{{ form.d_max }}
+		<br>
+		<label for="id_n_terms">N terms</label>
+		{{ form.n_terms }}
+		<br>
+		<span class='small'>Estimate</span><span class="estimate" id='n_terms_estimate'>&nbsp;-</span>
+		<br>
+		
+		<label for="id_alpha">Alpha</label>
+		{{ form.alpha }}
+		<br>
+		<span class='small'>Estimate</span><span class="estimate" id='alpha_estimate'>&nbsp;-</span>
+		<br>
+		
+		<label for="id_slit_height">Slit height [1/&Aring;]</label>
+		{{ form.slit_height }}
+		<br>
+		
+		<label for="id_slit_width">Slit width [1/&Aring;]</label>
+		{{ form.slit_width }}
+		<br>
+		
+		<label for="id_q_min">Q min [1/&Aring;]</label>
+		{{ form.q_min }}
+		<br>
+		
+		<label for="id_q_max">Q max [1/&Aring;]</label>
+		{{ form.q_max }}
+		<p>
+	
+		<label class="long" for="id_has_bck">Check to estimate background level:</label> 
+		<span id="sidechkbox"> {{ form.has_bck }} </span>
+		<br>
+	
+		<span id='submit'>
+			<input type="submit" value="Submit" />
+		</span>	
+	</form>
+	</div>
+	
+	{% if pr_outputs %}
+		<div class="sidetitle">Outputs</div>
+		<div class="side">
+			{% for item in pr_outputs %}
+				{{ item.name|safe }} 
+				<span class="value" title={{ item.title|safe }}> 
+				<script id="source" language="javascript" type="text/javascript">
+					var val = {{ item.value }};
+					document.write(val.toPrecision(3)+'&nbsp; {{ item.units|safe }}');
+				</script>
+				</span><br>
+			{% endfor %}
+		</div>
+		
+		<!-- div class="sidetitle">D max explorer</div>
+		
+		
+		<div id='explorer_chart' style="width:190px;height:170px">
+			<div class='noplot'><div class='explanation'>Working on explorer data<br>Please wait</div></div>
+		</div>
+		
+		<div class='small' style='text-align:right; margin-top:5px;'>D max [&Aring;]</div>
+
+
+		
+		<div id="d_explorer"> 
+			<span class='small' >Npts</span>
+			<span class='small' >Min</span>
+			<span class='small' >Max</span><br>
+			<input  onchange="explore_dmax();" title='Number of points in the output distribution' type="text" id="d_expl_npt" />
+			<input  onchange="explore_dmax();" title='Minimum value of D max' type="text" id="d_expl_min" />
+			<input  onchange="explore_dmax();" title='Maximum value of D max' type="text" id="d_expl_max" />
+		</div>
+		<div id="d_explorer"> 
+		
+		</div -->
+	
+	{% endif %}
+	
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+	
+{% block header %}
+    <!--[if IE]><script language="javascript" type="text/javascript" src="/media/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/media/flot/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="/media/flot/jquery.flot.navigate.js"></script>
+    <script language="javascript" type="text/javascript" src="/media/js/dataplot.js"></script>
+    <script language="javascript" type="text/javascript" src="/media/js/core.js"></script>
+    <link rel="stylesheet" href="/media/plots.css" type="text/css" />
+	
+  	<script type="text/javascript">
+  	function on_load(){
+		var iq_data = {{iq_data|safe}}; 
+		var data = [ { data: iq_data, label: "I(Q) [1/cm]"} ];
+		var options = {
+			series: { lines: { show: true }, points: { show: true }, shadowSize: 0 },
+			lines: { show: true, fill: true, fillColor: "rgba(255, 255, 255, 0.2)", lineWidth: 2 },
+			points: { show: true, fill: true,
+				xerr: {scaleAxis:false, show: false, upperCap: "-", lowerCap: "-"}, 
+				yerr: {show: true, upperCap: "-", lowerCap: "-", asymmetric:true}
+			},
+			zoom: { interactive: true, amount: 1.05 },
+			grid: { hoverable: true, clickable: false },
+			pan: { interactive: true },
+			xaxis : {
+               		{% if ticks_x %}	
+               			ticks: {{ticks_x|safe}}
+               		{% endif %}
+			},	
+			yaxis : {
+               		{% if ticks_y %}	
+               			ticks: {{ticks_y|safe}}
+               		{% endif %}
+			},	
+			legend: { margin: [10,10] },
+			app_options: {}
+		};  
+		
+		options.app_options.scale_x = '{{ xscale|default:'linear'}}';
+		options.app_options.scale_y = '{{ yscale|default:'linear'}}';
+		
+		if(iq_data.length>0){
+			create_plot_new($,'data_plot', data, options, 'Q [1/&Aring;]', true);
+		};  		
+  	};
+  	</script>
+{% endblock %}
+
+{% block content %}
+<script id="source" language="javascript" type="text/javascript">
+	window.onload=on_load;
+</script>	
+
+<h1 class="title"> {{ iq_name }} </h1>
+<p>
+{%if errors %}
+	{% for e in errors %}
+	{{ e }}
+	{% endfor %}
+{% endif %}
+<p>
+<div class='plot_area'>
+	<div id="scale_links">
+		x-scale:
+		{% ifequal xscale 'linear' %} 
+		<a href="?{{ xscale_qs }}=log">log</a> | linear
+		{% else %}
+		log | <a href="?{{ xscale_qs }}=linear">linear</a>
+		{% endifequal %}
+		&nbsp;&nbsp;&nbsp;
+		y-scale:
+		{% ifequal yscale 'linear' %}  
+		<a href="?{{ yscale_qs }}=log">log</a> |linear
+		{% else %}
+		log | <a href="?{{ yscale_qs }}=linear">linear</a>
+		{% endifequal %}
+	</div>
+	<div id='data_plot' style="width:500px;height:200px"></div>
+</div>
+
+{% endblock %}
+

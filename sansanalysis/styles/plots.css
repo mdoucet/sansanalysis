@@ -1,0 +1,43 @@
+.plot_area #x_label {
+	font-size:12px;
+	margin-top:5px;
+	float:right;
+	padding-right:5px;
+}
+
+.plot_area .noplot {
+	width:550px;
+}
+
+.plot_area .button {
+    position: absolute;
+    cursor: pointer;
+}
+.plot_area div.button {
+    font-size: smaller;
+    color: #666;
+    background-color: #eee;
+    padding: 2px;
+    width: 54px;
+    text-align: center;
+    border: 1px solid #ddd
+}
+
+.plot_area #scale_links {
+	font-size:12px;
+	margin-left:317px;
+}
+
+.plot_area {
+padding-bottom: 30px;
+}
+
+.plot_area #chi2 {
+	font-size:12px;
+	margin-left: 25px;
+}
+
+.plot_area #scale_links_short {
+	font-size:12px;
+	margin-left:142px;
+}

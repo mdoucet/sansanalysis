@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+	  <a href="/">Home</a>
+{% endblock %}
+   
+{% block header %}
+<script type="text/javascript">
+    function show_dialog() {
+  		document.getElementById('dialog').innerHTML = {{ popup_alert|safe }};
+    	$("#dialog").dialog({ draggable: false, height: 250, modal: true, resizable: false, title: 'Welcome to SANS Data Analysis' });
+  	}
+</script>
+{% endblock %}
+    
+{% block content %}
+<script id="source" language="javascript" type="text/javascript">
+	$(document).ready(show_dialog);
+</script>
+
+
+<h1 class="title">SANS Data Analysis</a></h1>
+
+<p>
+The SANS Analysis site is a data analysis application that allows users to upload, analyze, 
+and share small angle scattering data. At the moment, this application is focused on P(r) inversion
+calculations, but more modeling utilities are underway.
+<p>
+
+<div class="steps">
+
+<div id="step-one" class='ui-corner-all'>
+<h3 class="title"> Log-in using your OpenID </h3>
+<p>
+SANS Data Analysis uses <a href='http://openid.net/get/'>OpenID</a> for authentication.
+OpenID is a service that allows you to log-in to many different websites using a single identity.
+<p>
+<b>Follow this link to <a href='/users'>log-in using your OpenID</b></a>.
+<p>
+Once you authenticate yourself with your OpenID, a SANS Data Analysis account will automatically be created for you.
+</p>
+<br>
+<span class='small'>
+	* Find out <a href="http://openid.net/get-an-openid/what-is-openid/">more about OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID enabled account</a>.
+</span>
+
+
+</div>
+
+<div id="step-two" class='ui-corner-all'>
+<h3 class="title"> Upload and fit your data </h3>
+<p>
+Using the Data Dashboard, you can upload data sets for analysis. Most data formats are currently supported, 
+including the NIST format, the CanSAS XML format, and most commonly used ASCII formats.
+</div>
+
+<div id="step-three" class='ui-corner-all'>
+<h3 class="title"> Share your results with colleagues </h3>
+<p>
+This site was built with the intention of making it a collaborative tool for research. 
+You can easily share your data with other users, and sharing your fit results is as easy as cut and pasting
+a link in an email.
+</div>
+
+
+
+</div>
+		
+{% endblock %}	
+
+
+

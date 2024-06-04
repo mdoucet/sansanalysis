@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %} Login {% endblock %}
+
+{% block header %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" href="/media/forms.css" type="text/css" />
+	
+	<!-- Simple OpenID Selector -->
+	<link rel="stylesheet" href="/media/thirdparty/openid-selector/css/openid.css" />
+	<script type="text/javascript" src="/media/thirdparty/openid-selector/js/openid-jquery.js"></script>
+
+	<script type="text/javascript">
+	$(document).ready(function() {
+	    openid.init('openid_identifier');
+	});
+	</script>
+	<!-- /Simple OpenID Selector -->
+	
+{% endblock %}
+
+{% block content %}
+<h3 class="title"> Log in with your OpenID </h3>
+<p>
+
+<!-- Errors -->
+{% if error %}
+    <div class="error">{{ error|escape }}</div>
+{% endif %}
+
+<!-- Returns info -->
+  {% if url %}
+    <div class="message">
+      OpenID authentication succeeded; you authenticated as
+        <a href="{{ url }}">{{ url|escape }}</a>.
+
+      <p>
+    </div>
+  {% endif %}
+
+  {% if message %}
+    <div class="message">
+      {{ message|escape }}
+    </div>
+  {% endif %}
+
+  {% if failure_reason %}
+    <div class="error">
+      {{ failure_reason|escape }}
+    </div>
+  {% endif %}
+
+<!-- Simple OpenID Selector -->
+<p>SANS Data Analysis uses <a href='http://openid.net/get-an-openid/what-is-openid/'>OpenID</a> 
+					for authentication. 
+					If you already have an OpenID, please click your account provider:
+				</p>
+
+<div>
+<form action="{{ consumer_url }}" method="post" id="openid_form">
+	<fieldset>
+   		
+    		<div id="openid_choice">
+	    		
+	    		<div id="openid_btns"></div>
+
+			</div>
+			
+			<div id="openid_input_area">
+				<input id="openid_identifier" name="openid_identifier" type="text" value="http://" />
+				<input id="openid_submit" type="submit" value="Sign-In"/>
+			</div>
+		
+	</fieldset>
+</form>
+</div>
+
+<!-- /Simple OpenID Selector -->
+{% endblock %}
+

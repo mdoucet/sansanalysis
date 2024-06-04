@@ -1,0 +1,14 @@
+<div id="accordion">
+
+
+{% regroup models|dictsort:"cat" by cat as cat_list %}
+{% for category in cat_list %}
+<h3><a href="#">{{ category.grouper }}</a></h3>
+<div class='model_dialog'>
+{% for item in category.list|dictsort:"name" %}
+<a href='javascript:void(0);' onclick='select_fit_model({{ item.id }});' {% if item.help %}title="item.help"{% else %}title="Click to select the {{ item.name }} model"{% endif %}>{{ item.name }}</a><br>
+{% endfor %}
+</div>
+{% endfor %}
+
+</div>

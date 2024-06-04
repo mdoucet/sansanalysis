@@ -1,0 +1,17 @@
+<table cellspacing="0">
+	<tbody>
+{% for p in params %}
+<tr>
+		<td><input class='form_chkbox' id='id_chk_{{ p.short_name }}' name='chk_{{ p.short_name }}' type='checkbox' title='Check to fit this parameter' {% if p.checked %} checked='checked' {% endif %}/></td>
+		<td><label for='id_{{ p.short_name }}'>{{ p.long_name|safe }}</label></td>
+		<td><input id='id_{{ p.short_name }}' name='{{ p.short_name }}' type='text' value='{{ p.value }}' onchange='process_par_change()' {% if p.help %} title='{{p.help}}' {% endif %}/></td>
+		<td><div class='par_error' id='id_err_{{ p.short_name }}'>
+		{% if p.error %}
+		&nbsp;&#x000B1; {{ p.error }}
+		{% endif %}</div></td>
+		<td><!-- a href="javascript:alert('not ready');">set polydispersity</a --></td>
+	</tr>
+{% endfor %}
+	</tbody>
+</table>
+

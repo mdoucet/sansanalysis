@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}
+Registration
+{% endblock %}
+
+{% block header %}
+	<link rel="stylesheet" href="/media/forms.css" type="text/css" />
+{% endblock %}
+
+{% block content %}
+	{% if form.errors %}
+		<div class="error">
+			{% if form.username.errors %}
+				User Name:{{ form.username.errors }}
+			{% endif %}
+			{% if form.lastname.errors %}
+				Last Name:{{ form.lastname.errors }}
+			{% endif %}
+			{% if form.firstname.errors %}
+				First Name:{{ form.firstname.errors }}
+			{% endif %}
+			{% if form.email.errors %}
+				Email:{{ form.email.errors }}
+			{% endif %}
+		</div>
+	{% endif %}
+	
+	<h1 class="title">Registration</a></h1>
+	<p>
+		Personalize your profile by entering additional information below. 
+		Registering yourself will allow you access to the full-featured site.
+	</p>
+	
+	<div id="stylized" class="userform">
+	<form action="/users/registration/" method="POST">
+		
+		<label>OpenID
+		<span class="small">Your OpenID URL</span>
+		</label>
+		{% if user.get_profile %}
+			<a href={{ user.get_profile.openid|safe }}>{{ user.get_profile.openid|safe }}</a>
+		{% else %}
+			<div class="emptyfield">None</div>
+		{% endif %}
+		<br>
+		
+		<label for="id_username">Display Name
+		<span class="small"> Enter a display name</span>
+		</label>		
+		{{ form.username }}
+		
+		
+		<label for="id_firstname">First Name
+		<span class="small">[optional]</span>
+		</label>		
+		{{ form.firstname }}
+		
+		
+		<label for="id_lastname">Last Name
+		<span class="small">[optional]</span>
+		</label>		
+		{{ form.lastname }}
+		
+		
+		<label for="id_email">Email
+		<span class="small">We do not share email addresses</span>
+		</label>		
+		{{ form.email }}
+		
+		<button type="submit">Save Changes</button>
+		<div class="spacer"></div>
+	</form>
+	</div>
+
+{% endblock %}

@@ -1,0 +1,499 @@
+
+a
+{
+	color: #196AC7;
+	text-decoration: none;
+	word-wrap: break-word;
+}
+a:focus {
+	outline-width:0px;
+}
+a:hover
+{
+	text-decoration: underline;
+}
+a.title-link
+{
+	color: #666; 
+	text-decoration: none;
+}
+a:visited
+{
+	color: #196AC7;
+}
+img {
+	border: 0px;
+}
+
+li {
+	padding: 5px;
+}
+h4
+{
+	color: #666;
+}
+
+p {
+	margin: 14px 0;
+}
+
+body
+{	
+	margin: 0 auto;
+	font-size: 13px;
+	font-family: arial,sans-serif;
+	background: #FFF;
+	padding-left: 10px;
+	padding-right: 10px;
+	width:945px;
+	
+}
+
+blockquote
+{
+	font-family: arial,sans-serif;
+	color: #333;
+	padding: 5px;
+}
+pre
+{
+ 	padding: 5px;
+	overflow: auto;
+	width: 95%;
+	max-height: 450px;
+	margin: 0px auto;
+	border: silver 2px dotted;
+}
+code
+{
+        font-size:110%;
+}
+
+h1, h2, h3, h4
+{
+	margin: 0px;
+	padding: 0px;
+}
+.description
+{
+	color: #333;
+}
+#content
+{
+	text-align:justify;
+	position: absolute;
+	margin-right: 20px;
+	margin-left: 175px;
+	margin-bottom: 20px;
+	width: 580px;
+	margin-top: 10px;
+	color: #333;
+	font-size: 13px;
+
+}
+
+#links
+{
+	position: absolute;
+	padding: 0px;
+	padding-top: 0px;
+	width: 160px;
+	font-size: 13px;
+}
+
+
+
+/* RIGHT SIDE INPUT/OUTPUT*/
+
+.error{
+	font-size:12px;
+	color:#800000;
+	border:solid 1px #000000;
+	background:#ffc0cb;
+	margin-bottom:10px;
+	padding: 8px;
+}
+.errorlist{
+	margin: 0px;
+}
+
+#rightbar
+{
+	position: absolute;
+	margin-left:755px;
+	margin-bottom: 15px;
+	width: 190px;
+	padding-bottom: 15px;
+	
+}
+
+#rightbar .side 
+{
+	padding-top: 4px;
+	padding-right: 10px;
+	padding-left:10px;
+	padding-bottom: 10px;
+	/*background: #DDF2A1;*/
+	background: #EEEEEE;
+	border: 1px solid silver;
+
+}
+
+#rightbar .sidetitle
+{
+	background: #EEEEEE;
+	border: 1px solid silver;
+}
+
+#rightbar label{
+font-size:12px;
+width:80px;
+padding-bottom: 0px;
+}
+
+#rightbar .small{
+color:#666666;
+
+font-size:11px;
+font-weight:normal;
+text-align:right;
+padding-left:10px;
+}
+
+#rightbar .long{
+	line-height: 100%;
+	padding-right: 20px;
+}
+
+#rightbar .estimate{
+color:#666666;
+font-size:13px;
+font-weight:normal;
+text-align:left;
+width:60px;
+padding-left:5px;
+position: absolute;
+right:10px;
+}
+
+#rightbar form
+{
+	line-height: 170%;
+	margin-bottom:35px;
+}
+
+#rightbar .value{
+	color:#666666;
+	font-size:12px;
+	font-weight:normal;
+	text-align:left;
+	width:80px;
+	padding-left:5px;
+	position: absolute;
+	right:10px;
+}
+
+#rightbar input{
+font-size:12px;
+line-height: 100%;
+border-spacing: 0px;
+margin: 0px;
+padding: 0px;
+width: 60px;
+position: absolute;
+right:10px;
+}
+
+#sidechkbox input{
+vertical-align:middle;
+position: absolute;
+width: 20px;
+right: 10px;
+}
+
+
+
+#d_explorer {
+	float: right;
+}
+
+.noplot {
+	width:198px;
+	height:170px;
+	text-align: center;
+	background:#ebf4fb;
+	border:solid 1px #eee;
+}
+.explanation {
+	color:#666666;
+	margin-top:50px;
+}
+
+#d_explorer input{
+	font-size:11px;
+	line-height: 100%;
+	border-spacing: 0px;
+	margin-right: 4px;
+	padding: 0px;
+	width: 40px;
+	float: none;
+	position:relative;
+	right:0;
+
+}
+
+#rightbar .small{
+	padding-left:10px;
+	padding-right:10px;
+	margin-right: 10px;
+}
+
+#submit input{
+float:right;
+width: 60px;
+height: 25px;
+margin-top: 10px;
+margin-bottom: 10px;
+text-align:center;
+
+}
+
+.breadcrumbs
+{
+	padding-left: 5px;
+	padding-bottom: 2px;
+	padding-top:2px;
+	margin-top: 5px;
+	border-top: 1px solid silver;
+	font-size:12px;
+	color: #666;
+}
+
+.user_info
+{
+	float:right;
+	font-size:12px;
+}
+.suggestions
+{
+	padding: 0px;
+	padding-top: 9px;
+	text-align: right;
+}
+/* FOOTER */
+
+.footer { 
+	color:#666; 
+	font-size:10px;
+	margin-left:25px;
+	margin-right:25px;
+	border-top: 1px solid silver;
+}
+
+.footer p {
+	margin-left:auto;
+	margin-right:auto;
+	width:220px;
+}
+
+.banner {
+	margin-top:10px;
+	height:40px;
+}
+
+.content_body
+{
+    margin-bottom:50px;
+}
+
+.title
+{
+	font-size: 18px;
+	color: #666;
+}
+
+.side
+{
+	color: #333;
+	font-size: 12px;
+	font-weight: normal;
+	line-height: 120%;
+	padding: 2px;
+	margin-bottom:15px;
+	border: 1px solid silver;
+}
+
+.sidetitle
+{
+	color: #666;
+	font-weight: bold;
+	padding: 4px;
+	margin-top: 15px;
+	font-size: 13px;
+
+	text-transform: uppercase;
+	padding-left: 8px;
+	/*background-color: #DDF2A1;*/
+	background-color: #99ccff;
+    -moz-border-radius-topleft: 6px; 
+	-webkit-border-top-left-radius: 6px; 
+	-moz-border-radius-topright: 6px; 
+	-webkit-border-top-right-radius: 6px; 
+	border: 1px solid silver;
+}
+
+
+
+/* PLOT ACTIONS */
+.plot{
+	width:500px;
+	height:200px;
+}
+.plot_actions{
+	font-size:12px;
+	margin-left:425px;
+}
+.plot_label{
+	font-size:12px;
+	margin-top:5px;
+	float:right;
+	margin-right:80px;
+}
+.mouse_over{
+	font-size:12px;
+	display: inline;
+}
+
+.label_action
+{
+	cursor: pointer;
+	color: rgb(0,102,204);
+	text-decoration: none;
+}
+.label_action:hover
+{
+	text-decoration: underline;
+}
+
+.user_alert {
+	cursor: pointer;
+	display:none;
+	background: #FFEA7D;color: black;
+	padding: 0px;
+	border: 1px solid #96740B;
+}
+.user_alert #alert_message {
+	padding: 5px;
+	padding-top: 14px;
+}
+.user_alert .close {
+	background-image:url('close.png');
+	background-position: top right;
+	background-repeat:no-repeat;
+	padding: 0px;
+	margin: 2px;
+}
+
+.steps #step-one {
+	height: 175px;
+	background-image:url('step1.png');
+	background-position: 15px 15px;
+}
+
+.steps #step-two {
+	background-image:url('step2.png');
+	background-position: 480px 15px;
+	padding-left: 20px;
+	padding-right: 130px;
+}
+
+.steps #step-three {
+	background-image:url('step3.png');
+}
+.steps div {
+	text-align:justify;
+	height:90px;
+	margin-bottom: 15px;
+	padding: 20px;
+	padding-left: 110px;
+	border: 1px solid silver;
+	/*background: #DDF2A1;*/
+	background-repeat:no-repeat;
+	background-position: 10px 15px;	
+}
+
+.steps #openid_btns {
+	padding:5px;
+	height:auto;
+	margin-top:10px;
+}
+
+.small{
+color:#666666;
+font-size:11px;
+font-weight:normal;
+
+}
+
+#placeholder .button {
+    position: absolute;
+    cursor: pointer;
+}
+#placeholder div.button {
+    font-size: smaller;
+    color: #999;
+    background-color: #eee;
+    padding: 2px;
+}
+.message {
+    padding-left: 50px;
+    font-size: smaller;
+}
+
+.banner_title {
+	float:left;
+	height:40px;
+	background-image:url('sanslogo_40.png');
+	background-repeat:no-repeat;
+	padding-left:50px;
+	font-size:30px;
+	color:#666666;
+	font-weight: bold;
+}
+
+.exponent {
+	/* Must leave a space before the exponent! */
+	font-size:9px;
+	position:relative;
+	top:-5px;
+	left:-1px;
+}
+
+.subscript {
+	/* Must leave a space before the exponent! */
+	font-size:9px;
+	position:relative;
+	top:1px;
+	left:-1px;
+}
+
+#comment_dialog textarea {
+    width: 250px;
+}
+
+#beta {
+	font-size:10px;
+	position:relative;
+	top:12px;
+	left: -22px;
+	color:#aaa;
+}
+
+.hosted_by {
+	text-align:justify;
+	height:90px;
+	padding-left: 160px;
+	background-repeat:no-repeat;
+	background-position: 15px 0px;	
+	background-image:url('utk-logo.png');
+}

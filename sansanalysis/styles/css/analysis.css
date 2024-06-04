@@ -1,0 +1,87 @@
+
+.analysis_form form {
+	width:500px;
+	margin: auto;
+	padding:14px;
+	border:solid 1px silver;
+	/* background:#DDF2A1; */
+	background: #eeeeee;
+	-moz-border-radius-topleft: 4px; 
+	-webkit-border-top-left-radius: 4px; 
+	-moz-border-radius-topright: 4px; 
+	-webkit-border-top-right-radius: 4px; 
+	-moz-border-radius-bottomright: 4px; 
+	-webkit-border-bottom-right-radius: 4px; 
+	-moz-border-radius-bottomleft: 4px; 
+	-webkit-border-bottom-left-radius: 4px; 
+}
+
+.analysis_form .spacer{clear:both; height:1px;}
+.analysis_form .section_spacer{clear:both; height:10px;}
+
+.analysis_form .model_parameters {
+	font-size: 12px;
+}
+
+.analysis_form .model_parameters label {
+	margin-right: 15px;
+	
+}.analysis_form .model_parameters input {
+	font-size: 10px;
+	margin: 0px 0px 0px 4px;
+	padding: 0;
+	width: 60px;
+}
+
+.analysis_form .model_parameters .form_chkbox {
+	width: 20px;
+	margin-left: 20px;
+}
+
+.analysis_form .model_parameters .par_error {
+	width: 60px;
+	margin-right: 20px;
+	color:#666666;
+
+}
+.analysis_form .model_parameters .par_const {
+	width: 75px;
+	margin-right: 20px;
+	margin: 0px 0px 0px 4px;
+	color:#666666;
+
+}
+
+.analysis_form .model_parameters .text_const {
+	/* margin-right: 20px;*/
+	color:#666666;
+	margin: 0px 0px 0px 4px;
+	padding: 0;
+	text-align:left;
+}
+
+.analysis_form .model_parameters button {
+	width: 80px;
+	float:right;
+	
+}
+
+.analysis_form .qrange label {
+	margin-left: 26px;
+	width:80px;
+}
+
+
+.analysis_form .uncheckable_parameters {
+	margin-left: 26px;
+	
+}.analysis_form .uncheckable_parameters .text_label {
+	width: 80px;
+	padding-left: 0px;
+
+}
+
+.model_dialog a {
+	color: #196AC7;#ffffff;
+	word-wrap: break-word;
+}

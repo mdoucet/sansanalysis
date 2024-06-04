@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+	  <a href="/">Home</a> &rsaquo; Error
+{% endblock %}
+
+{% block content %}
+<h1 class="title">The entertainment never stops!</h1>
+<p>The application has encountered a problem and has reached a dead end.
+Such occurrences are logged, and your issue will be investigated.
+</p>
+
+<p>While we fix this mess, you can try going back to the <a href="/">home page</a>.</p>
+<p>When contacting us about the current problem, please copy and paste the following:</p>
+
+<pre><code>
+{{error}}
+</code></pre> 
+
+{% endblock %}

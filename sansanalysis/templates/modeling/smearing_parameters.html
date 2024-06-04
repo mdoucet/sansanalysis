@@ -1,0 +1,23 @@
+
+
+<div class="spacer"></div>
+<input type='hidden' id='id_smear_type' name='smear_type' type='text' value='{{ smear_type }}'/>
+<table cellspacing="0">
+	<tbody>
+		<tr><td><label class='text_label' for='id_smear_type'>Smearing type:</label></td>
+		<td><span class='text_const'>{{ smear_type }}</span></td>
+		</tr>
+		{% for p in smear_params %}
+		<tr>
+		{% if smear_fixed %}
+		<td><label>{{ p.long_name|safe }}:</label><input type='hidden' id='id_{{ p.short_name }}' name='{{ p.short_name }}' type='text' value='{{ p.value }}'/></td>
+		<td><div class='par_const'>{{ p.value }} {{ p.units|safe }}</div></td>
+		{% else %}
+		<td><div class='text_label'><label for='id_{{ p.short_name }}'>{{ p.long_name|safe }} [{{p.units|safe}}]</label></div></td>
+		<td><input id='id_{{ p.short_name }}' name='{{ p.short_name }}' type='text' value='{{ p.value }}' onchange='process_par_change()' {% if p.help %} title='{{p.help}}' {% endif %}/></td>
+		{% endif %}
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
